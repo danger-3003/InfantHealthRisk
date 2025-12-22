@@ -33,12 +33,18 @@ cd api
 
 ---
 
-## 📥 Step 3: Install Dependencies
+## 📥 Step 3: Install Dependencies and activate virtual environment
 
 Install all required Python packages using:
 
 ```
 uv sync
+```
+
+Activate virtual env using:
+
+```
+.venv/scripts/activate
 ```
 
 ---
