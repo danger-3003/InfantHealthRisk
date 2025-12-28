@@ -1,36 +1,67 @@
-# Python-generated files
+# ------------------------ PYTHON BACKEND ------------------------
 __pycache__/
-*.py[oc]
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environment
+venv/
+.venv/
+
+# Build / Cache
+*.log
+*.sqlite3
+.cache/
 build/
 dist/
 wheels/
-*.egg-info
+*.egg-info/
 
-# Virtual environments
-.venv
-.ruff_cache
+# Large generated files
+*.zip
+*.tar.gz
+*.csv
+*.xlsx
+exports/
+uploads/
+
+# ML Models (optional)
+models/
+checkpoints/
+weights/
+
+# Environment variables
+.env
+.env.*
+
+# IDE
+.vscode/
+.idea/
+
+# ------------------------ FRONTEND CLIENT ------------------------
 */node_modules/
 .expo/
 dist/
+web-build/
 npm-debug.*
 *.yarn
+
+# Expo keys/mobile
 *.jks
 *.p8
 *.p12
 *.key
 *.mobileprovision
-*.orig.*
-web-build/
-# expo router
+
+# Router
 expo-env.d.ts
 
+# iOS / Android native builds
+ios/
+android/
 
-
-ios
-android
-
-# macOS
+# MacOS
 .DS_Store
 
-# Temporary files created by Metro to check the health of the file watcher
+# Metro temp
 .metro-health-check*
