@@ -1,11 +1,16 @@
-from fastapi import UploadFile, File, FastAPI, Request, Query
+from datetime import datetime
+from fastapi import Depends, HTTPException, UploadFile, File, FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import FileResponse, JSONResponse
+from app.schemas.user import LoginRequest, RegisterRequest, ResetPasswordRequest
+from app.services.auth import create_access_token, get_current_user, hash_password, verify_password
+from app.serializers.user_serializer import serialize_user
 from app.utils.excel_export import generate_bulk_excel
 from app.utils.bulk_upload import read_bulk_file
 from app.schemas.request import InfantHealthInput, HealthPredictionResponse
 from app.services.inference import predict_health, predict_health_bulk
 from pathlib import Path
+from app.db.mongo_db import users_collection, records_collection
 
 
 app = FastAPI(
@@ -18,6 +23,60 @@ app = FastAPI(
 @app.get("/")
 def health_check():
     return {"status": "API running"}
+
+
+
+@app.post("/auth/register")
+async def register(data: RegisterRequest):
+    user = users_collection.find_one({"email": data.email})
+
+    if user:
+        raise HTTPException(status_code=400, detail="User already exists")
+
+    users_collection.insert_one({
+        "name": data.name,
+        "email": data.email,
+        "password": hash_password(data.password),
+        "created_at": datetime.utcnow()
+    })
+
+    return {"message": "User registered successfully"}
+
+@app.post("/auth/login")
+async def login(data: LoginRequest):
+    user = users_collection.find_one({"email": data.email})
+
+    if not user or not verify_password(data.password, user["password"]):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+
+    token = create_access_token({"sub": user["email"]})
+
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "message":"User login successfully",
+        "user": serialize_user(user)
+    }
+
+@app.post("/auth/reset-password")
+async def reset_password_public(data: ResetPasswordRequest):
+    user = users_collection.find_one({"email": data.email})
+
+    if not user:
+        raise HTTPException(status_code=404, detail="User not found")
+
+    # Verify old password instead of token/OTP/session
+    if not verify_password(data.old_password, user["password"]):
+        raise HTTPException(status_code=400, detail="Incorrect old password")
+
+    users_collection.update_one(
+        {"email": data.email},
+        {"$set": {"password": hash_password(data.new_password)}}
+    )
+
+    return {"message": "Password updated successfully"}
+
+
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler( request: Request, exc: RequestValidationError ):
@@ -39,11 +98,11 @@ async def validation_exception_handler( request: Request, exc: RequestValidation
     )
 
 @app.post("/predict", response_model=HealthPredictionResponse)
-def predict(input_data: InfantHealthInput):
-    return predict_health(input_data.dict())
+def predict(input_data: InfantHealthInput, user: str = Depends(get_current_user)):
+    return predict_health(input_data.dict(), user)
 
 @app.post("/predict/bulk")
-async def predict_bulk(file: UploadFile = File(...)):
+async def predict_bulk(file: UploadFile = File(...), user: str = Depends(get_current_user)):
     df = read_bulk_file(file)
 
     # Extract names
@@ -56,10 +115,15 @@ async def predict_bulk(file: UploadFile = File(...)):
     if "name" in df.columns:
         df = df.drop(columns=["name"])
 
+    # Get input rows as dictionaries
+    rows = df.to_dict(orient="records")
+
     predictions = predict_health_bulk(df)
 
+    input_data=[]
     response = []
-    for name, result in zip(names, predictions):
+    for name, row, result in zip(names, rows, predictions):
+        input_data.append(row)
         response.append({
             "name": name,
             "results": result
@@ -68,12 +132,30 @@ async def predict_bulk(file: UploadFile = File(...)):
     # 🔹 Generate Excel
     excel_path = generate_bulk_excel(response)
 
+    records_collection.update_one(
+        {"email": user},
+        {
+            "$push": {
+                "records": {
+                    "type": "bulk",
+                    "date": datetime.utcnow(),
+                    "input_data": input_data,
+                    "result": response,
+                    "download_excel": excel_path
+                }
+            }
+        },
+        upsert=True
+    )
+
     return {
         "message": "Bulk prediction completed",
         "count": len(response),
         "download_file_name": f"/predict/bulk/download?file={excel_path}",
         "result": response
     }
+
+
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 EXPORT_DIR = BASE_DIR / "app" / "exports"

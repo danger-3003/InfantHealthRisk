@@ -137,7 +137,7 @@ api/
 ---
 
 ## ✅ Commands Summary
-
+- Install UV: pip install uv
 - Install dependencies: uv sync
 - Train model: uv run train
 - Test model: uv run test
