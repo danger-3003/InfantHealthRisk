@@ -2,6 +2,6 @@ services:
   - type: web
     name: infant-health-api
     env: python
-    buildCommand: "pip install -r requirements.txt"
+    buildCommand: "uv sync"
     startCommand: "./start.sh"
     plan: free
