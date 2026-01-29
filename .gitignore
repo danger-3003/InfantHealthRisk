@@ -33,7 +33,6 @@ checkpoints/
 weights/
 
 # Environment variables
-.env
 .env.*
 
 # IDE
