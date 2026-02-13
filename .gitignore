@@ -1,68 +1,100 @@
-# ------------------------ PYTHON BACKEND ------------------------
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
+# ==========================================================
+# ROOT LEVEL
+# ==========================================================
 
-# Virtual environment
-venv/
-.venv/
-
-.ruff_cache/
-
-# Build / Cache
-*.log
-*.sqlite3
-.cache/
-build/
-dist/
-wheels/
-*.egg-info/
-
-# Large generated files
-*.zip
-*.tar.gz
-*.csv
-*.xlsx
-exports/
-uploads/
-
-# ML Models (optional)
-models/
-checkpoints/
-weights/
-
-# Environment variables
-.env.*
+# OS
+.DS_Store
+Thumbs.db
 
 # IDE
 .vscode/
 .idea/
 
-# ------------------------ FRONTEND CLIENT ------------------------
-*/node_modules/
-.expo/
-dist/
-web-build/
-npm-debug.*
-*.yarn
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
 
-# Expo keys/mobile
-*.jks
-*.p8
-*.p12
-*.key
-*.mobileprovision
+# Environment Variables
+.env
+.env.*
+!.env.example
 
-# Router
-expo-env.d.ts
+# ==========================================================
+# ---------------------- BACKEND (api/) --------------------
+# ==========================================================
 
-# iOS / Android native builds
-ios/
-android/
+# Python cache
+api/__pycache__/
+api/**/*.pyc
+api/**/*.pyo
+api/**/*.pyd
 
-# MacOS
-.DS_Store
+# Virtual environments
+api/venv/
+api/.venv/
 
-# Metro temp
-.metro-health-check*
+# Ruff / lint cache
+api/.ruff_cache/
+
+# Python build artifacts
+api/build/
+api/dist/
+api/*.egg-info/
+
+# SQLite / DB files
+api/*.sqlite3
+
+# ML Artifacts (DO NOT commit trained models)
+api/models/
+api/checkpoints/
+api/weights/
+api/catboost_info/
+
+# Training artifacts
+api/model_metrics.csv
+
+# Data exports
+api/exports/
+api/uploads/
+
+# Large datasets (if raw data exists)
+api/data/*.csv
+api/data/*.xlsx
+
+# ==========================================================
+# ---------------------- FRONTEND (client/) ----------------
+# ==========================================================
+
+# Dependencies
+client/node_modules/
+
+# Next.js
+client/.next/
+client/out/
+
+# Build output
+client/build/
+
+# Coverage
+client/coverage/
+
+# TypeScript
+client/*.tsbuildinfo
+client/next-env.d.ts
+
+# Vercel
+client/.vercel/
+
+# Yarn (if used)
+client/.yarn/*
+!client/.yarn/patches
+!client/.yarn/plugins
+!client/.yarn/releases
+!client/.yarn/versions
+
+# PnP
+client/.pnp
+client/.pnp.*
