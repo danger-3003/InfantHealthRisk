@@ -1,4 +1,4 @@
-import { userAuthStoreType, } from "@/types/zustandStore";
+import { userAuthStoreType, } from "@/src/types/zustandStore";
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 

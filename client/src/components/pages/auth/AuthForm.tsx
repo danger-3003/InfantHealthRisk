@@ -3,10 +3,10 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { AuthMode } from '../types/auth'
-import InputField from './InputFiled'
-import { loginUser, registerUser } from '../services/auth.service'
-import { userAuthStore } from '@/store/userStore'
+import { AuthMode } from '../../../types/auth'
+import InputField from '../../common/InputFiled'
+import { loginUser, registerUser } from '../../../services/auth.service'
+import { userAuthStore } from '@/src/store/userStore'
 import Image from 'next/image'
 
 export default function AuthForm() {

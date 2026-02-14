@@ -1,7 +1,7 @@
 'use client'
 
 
-import AuthForm from "../components/AuthForm"
+import AuthForm from "../components/pages/auth/AuthForm"
 
 
 export default function Home() {

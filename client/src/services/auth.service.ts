@@ -32,3 +32,11 @@ export const loginUser = async (data: {
 
 export const resetPassword = (email: string) =>
   axiosInstance.post("/auth/reset-password", { email })
+
+export const logoutUser = () => {
+  Cookies.remove("auth_token");
+
+  if (typeof window !== "undefined") {
+    window.location.href = "/";
+  }
+}
