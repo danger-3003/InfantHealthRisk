@@ -15,13 +15,13 @@ export default function InputField({
 }: Props) {
   return (
     <div className="flex flex-col gap-1">
-      <label className="text-sm text-gray-300">{label}</label>
+      <label className="text-sm font-medium text-slate-600">{label}</label>
       <input
         type={type}
         value={value}
         required={required}
         onChange={e => onChange(e.target.value)}
-        className="px-4 py-2 rounded-lg bg-slate-900 border border-slate-700 text-white focus:outline-none focus:ring focus:ring-indigo-500 duration-300"
+        className="px-4 py-2 h-10 rounded-lg text-sm bg-white border border-pink-200 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring focus:ring-pink-300 focus:border-pink-300 duration-300"
       />
     </div>
   )
