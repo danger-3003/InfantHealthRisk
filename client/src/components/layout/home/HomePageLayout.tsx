@@ -8,7 +8,7 @@ import { SidebarUrls } from '../../constants/sidebarUrls'
 
 function HomePageLayout({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const [activeTab, setActiveTab] = useState<string>(SidebarUrls[0]?.name);
+  const [activeTab, setActiveTab] = useState<string>("");
   const [isSidebarOpen, setIsSidebarOpen] = useState<boolean>(true);
 
   return (
@@ -29,8 +29,7 @@ function HomePageLayout({ children }: { children: ReactNode }) {
             isSidebarOpen={isSidebarOpen}
             setIsSidebarOpen={setIsSidebarOpen}
           />
-          <div className={`mt-13 p-3 ${isSidebarOpen ? "w-[calc(100vw-15rem)]" : "w-[calc(100vw-3.5rem)]"} duration-300`}>
-            asufm ud
+          <div className={`mt-13 p-5 ${isSidebarOpen ? "w-[calc(100vw-16rem)]" : "w-[calc(100vw-4.5rem)]"} duration-300`}>
             {children}
           </div>
         </div>

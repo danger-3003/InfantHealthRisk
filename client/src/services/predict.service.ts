@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import axiosInstance from "./axios"
 
 export const predictSingle = (payload: any) =>

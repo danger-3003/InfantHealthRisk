@@ -4,7 +4,11 @@ button {
   cursor: pointer;
 }
 
-@layer utilities {}
+@layer utilities {
+  .input {
+    @apply px-4 py-2 w-full h-10 rounded-lg text-sm bg-white border border-pink-200 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring focus:ring-pink-300 focus:border-pink-300 duration-300;
+  }
+}
 
 .glass-blur {
   background: rgba(255, 255, 255, 0.2);

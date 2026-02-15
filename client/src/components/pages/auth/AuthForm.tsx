@@ -39,11 +39,14 @@ export default function AuthForm() {
           password,
         })
         if (response.access_token) {
-          setMessage(response.message)
           setUser({ email: response.user.email, name: response.user.name })
-          router.push("/home");
-          setName('')
-          setPassword('')
+          setMessage(response.message);
+          setTimeout(() => {
+            router.push("/home");
+            setName("")
+            setPassword("")
+            setMessage("")
+          }, 1000);
         }
 
       } else {
@@ -53,11 +56,14 @@ export default function AuthForm() {
           name,
         })
         if (response.access_token) {
-          setMessage(response.message)
           setUser({ email: response.user.email, name: response.user.name })
-          router.push("/home");
-          setName('')
-          setPassword('')
+          setMessage(response.message);
+          setTimeout(() => {
+            router.push("/home");
+            setName("")
+            setPassword("")
+            setMessage("")
+          }, 1000);
         }
       }
 
@@ -163,6 +169,12 @@ export default function AuthForm() {
               {error && (
                 <p className="text-red-500 text-sm bg-red-50 px-3 py-2 rounded-lg">
                   {error}
+                </p>
+              )}
+
+              {message && (
+                <p className="text-green-500 text-sm bg-green-50 px-3 py-2 rounded-lg">
+                  {message}
                 </p>
               )}
 

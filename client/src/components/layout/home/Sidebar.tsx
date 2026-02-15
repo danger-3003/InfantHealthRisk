@@ -4,6 +4,7 @@ import { SidebarTypes } from '@/src/types/layout/SidebarTypes'
 import React, { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 import { HeartPulse, LogOut } from 'lucide-react';
+import { logoutUser } from '@/src/services/auth.service';
 
 function Sidebar({ router, SidebarUrls, activeTab, setActiveTab, isSidebarOpen }: SidebarTypes) {
 
@@ -41,9 +42,14 @@ function Sidebar({ router, SidebarUrls, activeTab, setActiveTab, isSidebarOpen }
           </ul>
         </div>
         <div className='px-3 absolute bottom-3 w-full'>
-          <div className='text-red-500 px-2 py-2 h-8 flex gap-2 items-center cursor-pointer hover:bg-red-50 hover:text-red-400 active:bg-red-200 active:text-red-500 rounded-lg duration-300'>
-            <LogOut size={16} className='rotate-180' />
-            <span className={`${isSidebarOpen ? "block" : "hidden"} duration-300`}>Logout</span>
+          <div className='border-slate-300 border-t pt-3'>
+            <div
+              className='text-red-500 px-2 py-2 h-8 flex gap-2 items-center cursor-pointer hover:bg-red-50 hover:text-red-400 active:bg-red-200 active:text-red-500 rounded-lg duration-300'
+              onClick={() => { logoutUser() }}
+            >
+              <LogOut size={16} className='rotate-180' />
+              <span className={`${isSidebarOpen ? "block" : "hidden"} duration-300`}>Logout</span>
+            </div>
           </div>
         </div>
       </div>
