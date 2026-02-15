@@ -21,7 +21,10 @@ axiosInstance.interceptors.request.use((config) => {
 axiosInstance.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 401) {
+    const errorCode = error?.response?.status
+    const errorURL = error?.config?.url
+
+    if (errorCode === 401 && !errorURL.includes("/login")) {
       Cookies.remove("auth_token")
       window.location.href = "/"
     }
