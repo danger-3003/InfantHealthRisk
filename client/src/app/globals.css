@@ -4,8 +4,12 @@ button {
   cursor: pointer;
 }
 
-.glass-effect {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgb(0, 30, 63);
+@layer utilities {}
+
+.glass-blur {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(100px);
+  -webkit-backdrop-filter: blur(100px);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
