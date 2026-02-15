@@ -45,21 +45,32 @@ def health_check():
 
 @app.post("/auth/register")
 async def register(data: RegisterRequest):
-    user = users_collection.find_one({"email": data.email})
+    existing_user = users_collection.find_one({"email": data.email})
 
-    if user:
+    if existing_user:
         raise HTTPException(status_code=400, detail="User already exists")
+
+    hashed_password = hash_password(data.password)
 
     users_collection.insert_one(
         {
             "name": data.name,
             "email": data.email,
-            "password": hash_password(data.password),
+            "password": hashed_password,
             "created_at": datetime.utcnow(),
         }
     )
 
-    return {"message": "User registered successfully"}
+    user = users_collection.find_one({"email": data.email})
+
+    token = create_access_token({"sub": user["email"]})
+
+    return {
+        "access_token": token,
+        "token_type": "bearer",
+        "message": "User registered successfully",
+        "user": serialize_user(user),
+    }
 
 
 @app.post("/auth/login")
