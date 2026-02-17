@@ -43,7 +43,7 @@ export default function AuthForm() {
           setMessage(response.message);
           setTimeout(() => {
             router.push("/home");
-            setName("")
+            setEmail("")
             setPassword("")
             setMessage("")
           }, 1000);
@@ -60,6 +60,7 @@ export default function AuthForm() {
           setMessage(response.message);
           setTimeout(() => {
             router.push("/home");
+            setEmail("")
             setName("")
             setPassword("")
             setMessage("")

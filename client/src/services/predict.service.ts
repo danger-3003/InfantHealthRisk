@@ -11,5 +11,10 @@ export const predictBulk = (formData: FormData) =>
     },
   })
 
-export const downloadBulkFile = (filename: string) =>
-  `${process.env.NEXT_PUBLIC_API_URL}/predict/bulk/download/${filename}`
+export const exportUserHistory = () =>
+  axiosInstance.get("/history/export", {
+    responseType: "blob",
+  })
+
+export const getHistory = () =>
+  axiosInstance.get("/history")

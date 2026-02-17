@@ -17,6 +17,8 @@ from app.schemas.request import InfantHealthInput, HealthPredictionResponse
 from app.services.inference import predict_health, predict_health_bulk
 from pathlib import Path
 from app.db.mongo_db import users_collection, records_collection
+from openpyxl import Workbook
+import os
 
 
 app = FastAPI(
@@ -203,3 +205,113 @@ def download_bulk_excel(filename: str):
         filename=filename,
         media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
     )
+
+@app.get("/history")
+def get_user_history(user: str = Depends(get_current_user)):
+    record = records_collection.find_one(
+        {"email": user},
+        {"_id": 0}
+    )
+
+    if not record or "records" not in record:
+        return []
+
+    records = record.get("records", [])
+
+    # Sort latest first
+    records = sorted(records, key=lambda x: x["date"], reverse=True)
+
+    # Return only required fields
+    cleaned_records = [
+        {
+            "date": r.get("date"),
+            "input_data": r.get("input_data", []),
+            "result": r.get("result", [])
+        }
+        for r in records
+    ]
+
+    return cleaned_records
+
+
+@app.get("/history/export")
+def export_user_history(user: str = Depends(get_current_user)):
+
+    user_doc = records_collection.find_one({"email": user})
+
+    if not user_doc or "records" not in user_doc:
+        raise HTTPException(status_code=404, detail="No records found")
+
+    records = user_doc.get("records", [])
+
+    wb = Workbook()
+
+    # -----------------------
+    # Sheet 1 → All Inputs
+    # -----------------------
+    input_sheet = wb.active
+    input_sheet.title = "All Inputs"
+
+    input_headers_written = False
+
+    # -----------------------
+    # Sheet 2 → All Outputs
+    # -----------------------
+    output_sheet = wb.create_sheet("All Outputs")
+    output_headers_written = False
+
+    for record in records:
+        date = record.get("date")
+        input_data = record.get("input_data", [])
+        result_data = record.get("result", [])
+
+        # -------- INPUTS --------
+        for input_item in input_data:
+            row = {
+                "date": date
+            }
+            row.update(input_item)
+
+            if not input_headers_written:
+                input_sheet.append(list(row.keys()))
+                input_headers_written = True
+
+            input_sheet.append(list(row.values()))
+
+        # -------- OUTPUTS --------
+        for result in result_data:
+            name = result.get("name")
+            conditions = result.get("results", [])
+
+            row = {
+                "date": date,
+                "name": name,
+            }
+
+            for r in conditions:
+                condition_name = r.get("condition")
+                confidence = round(r.get("confidence", 0) * 100, 2)
+
+                row[f"{condition_name}_risk"] = r.get("risk_level")
+                row[f"{condition_name}_percent"] = confidence
+
+            if not output_headers_written:
+                output_sheet.append(list(row.keys()))
+                output_headers_written = True
+
+            output_sheet.append(list(row.values()))
+
+    # Ensure export folder exists
+    os.makedirs(EXPORT_DIR, exist_ok=True)
+
+    filename = f"My_Prediction_History_{datetime.utcnow().strftime('%Y%m%d%H%M%S')}.xlsx"
+    filepath = EXPORT_DIR / filename
+
+    wb.save(filepath)
+
+    return FileResponse(
+        path=filepath,
+        filename=filename,
+        media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    )
+
