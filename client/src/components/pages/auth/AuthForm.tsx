@@ -42,7 +42,7 @@ export default function AuthForm() {
           setUser({ email: response.user.email, name: response.user.name })
           setMessage(response.message);
           setTimeout(() => {
-            router.push("/home");
+            router.push("/predict");
             setEmail("")
             setPassword("")
             setMessage("")
@@ -59,7 +59,7 @@ export default function AuthForm() {
           setUser({ email: response.user.email, name: response.user.name })
           setMessage(response.message);
           setTimeout(() => {
-            router.push("/home");
+            router.push("/predict");
             setEmail("")
             setName("")
             setPassword("")

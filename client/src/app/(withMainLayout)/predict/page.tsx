@@ -53,11 +53,11 @@ export default function PredictPage() {
     ) : null
 
   return (
-    <div className="w-full max-w-5xl mx-auto">
+    <div className="w-full mx-auto">
       <div className="py-10">
-        <h1 className="text-3xl font-bold mb-6">
+        <h2 className="text-2xl font-semibold text-pink-600 mb-6">
           Newborn Risk Prediction
-        </h1>
+        </h2>
 
         <form
           onSubmit={handleSubmit(onSubmit)}

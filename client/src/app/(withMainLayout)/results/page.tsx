@@ -75,10 +75,10 @@ export default function HistoryPage() {
     }
   }
 
-  if (loading) return <div className="p-6">Loading...</div>
+  if (loading) return <div className="py-10">Loading...</div>
 
   return (
-    <div className="p-6">
+    <div className="py-10">
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-semibold text-pink-600">
           Prediction History
@@ -97,11 +97,11 @@ export default function HistoryPage() {
         <table className="w-full text-sm text-left">
           <thead className="bg-pink-50 text-slate-700">
             <tr>
+              <th className="px-4 py-3">Date</th>
               <th className="px-4 py-3">Name</th>
               <th className="px-4 py-3">Jaundice</th>
               <th className="px-4 py-3">Cardiac</th>
               <th className="px-4 py-3">Respiratory</th>
-              <th className="px-4 py-3">Date</th>
             </tr>
           </thead>
 
@@ -120,6 +120,10 @@ export default function HistoryPage() {
                   onClick={() => setSelectedRecord(record)}
                   className="border-t border-pink-100 hover:bg-pink-50 cursor-pointer duration-200"
                 >
+                  <td className="px-4 py-3 text-slate-500">
+                    {new Date(record.date).toLocaleString().split(",")[0]}
+                  </td>
+
                   <td className="px-4 py-3 font-medium">
                     {prediction.name}
                   </td>
@@ -134,10 +138,6 @@ export default function HistoryPage() {
 
                   <td className={`px-4 py-3 ${getRiskColor(respiratory?.risk_level || "")}`}>
                     {respiratory?.risk_level} ({Math.round((respiratory?.confidence || 0) * 100)}%)
-                  </td>
-
-                  <td className="px-4 py-3 text-slate-500">
-                    {new Date(record.date).toLocaleString()}
                   </td>
                 </tr>
               )

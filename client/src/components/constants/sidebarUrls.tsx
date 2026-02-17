@@ -7,12 +7,6 @@ import {
 
 export const SidebarUrls = [
   {
-    key: "home",
-    name: "Home",
-    path: "/home",
-    icon: <Home size={16}/>
-  },
-  {
     key: "predict",
     name: "Predict",
     path: "/predict",

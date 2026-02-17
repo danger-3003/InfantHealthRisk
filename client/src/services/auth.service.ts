@@ -30,8 +30,8 @@ export const loginUser = async (data: {
   return res.data;
 }
 
-export const resetPassword = (email: string) =>
-  axiosInstance.post("/auth/reset-password", { email })
+export const resetPassword = (email: string, old_password: string, new_password: string) =>
+  axiosInstance.post("/auth/reset-password", { email: email, old_password: old_password, new_password: new_password })
 
 export const logoutUser = () => {
   Cookies.remove("auth_token");
