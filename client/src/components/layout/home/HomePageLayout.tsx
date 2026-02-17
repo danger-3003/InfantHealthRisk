@@ -29,7 +29,7 @@ function HomePageLayout({ children }: { children: ReactNode }) {
             isSidebarOpen={isSidebarOpen}
             setIsSidebarOpen={setIsSidebarOpen}
           />
-          <div className={`mt-13 p-5 ${isSidebarOpen ? "w-[calc(100vw-16rem)]" : "w-[calc(100vw-4.5rem)]"} duration-300`}>
+          <div className={`mt-13 p-5 ${isSidebarOpen ? "w-[calc(100vw-16.5rem)]" : "w-[calc(100vw-5rem)]"} duration-300`}>
             {children}
           </div>
         </div>

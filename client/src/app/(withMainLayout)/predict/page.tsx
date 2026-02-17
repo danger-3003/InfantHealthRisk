@@ -83,7 +83,7 @@ export default function PredictPage() {
           <Section title="Birth Details" />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
-            <input type="number" placeholder="Gestational Age (weeks)" {...register("gestational_age_weeks", { valueAsNumber: true })} className="input" />
+            <input type="number" step="0.01" placeholder="Gestational Age (weeks)" {...register("gestational_age_weeks", { valueAsNumber: true })} className="input" />
             <input type="number" step="0.01" placeholder="Birth Weight (kg)" {...register("birth_weight_kg", { valueAsNumber: true })} className="input" />
             <input type="number" step="0.01" placeholder="Birth Length (cm)" {...register("birth_length_cm", { valueAsNumber: true })} className="input" />
             <input type="number" step="0.01" placeholder="Birth Head Circumference (cm)" {...register("birth_head_circumference_cm", { valueAsNumber: true })} className="input" />
@@ -148,7 +148,7 @@ export default function PredictPage() {
               {/* Close Button */}
               <button
                 onClick={() => setShowModal(false)}
-                className="absolute top-4 right-4 text-gray-500 hover:text-black text-lg"
+                className="absolute top-4 right-4 text-gray-500 hover:text-black text-lg duration-300"
               >
                 ✕
               </button>
@@ -162,16 +162,16 @@ export default function PredictPage() {
                   key={i}
                   className="mb-4 p-4 bg-gray-50 rounded-xl border border-gray-200"
                 >
-                  <p><strong>Condition:</strong> {r.condition}</p>
-                  <p><strong>Risk Level:</strong> {r.risk_level}</p>
-                  <p><strong>Confidence:</strong> {r.confidence}%</p>
+                  <p><span className="font-semibold">Condition:</span> {r.condition}</p>
+                  <p><span className="font-semibold">Risk Level:</span> {r.risk_level}</p>
+                  <p><span className="font-semibold">Likelyhood:</span> {r.confidence}%</p>
                 </div>
               ))}
 
               <div className="flex justify-center mt-6">
                 <button
                   onClick={() => setShowModal(false)}
-                  className="px-6 py-2 rounded-lg bg-pink-500 hover:bg-pink-600 text-white"
+                  className="px-6 py-2 rounded-lg bg-pink-500 hover:bg-pink-600 text-white duration-300"
                 >
                   Close
                 </button>
