@@ -21,6 +21,7 @@ export default function PredictPage() {
     formState: { errors },
   } = useForm<PredictFormData>({
     resolver: zodResolver(predictSchema),
+    mode: "onBlur",
   })
 
   const onSubmit = async (data: PredictFormData) => {
@@ -39,107 +40,189 @@ export default function PredictPage() {
     }
   }
 
+  const FormField = ({
+    label,
+    error,
+    children,
+  }: {
+    label: string
+    error?: string
+    children: React.ReactNode
+  }) => (
+    <div className="flex flex-col w-full">
+      <label className="text-sm font-medium mb-1">{label}</label>
+      {children}
+      {error && (
+        <p className="text-xs text-red-500 mt-1">{error}</p>
+      )}
+    </div>
+  )
+
   const Section = ({ title }: { title: string }) => (
-    <h2 className="col-span-2 mt-6 mb-2 text-lg font-semibold text-pink-600">
+    <h2 className="col-span-3 mt-8 mb-3 text-lg font-semibold text-pink-600">
       {title}
     </h2>
   )
 
-  const ErrorMsg = ({ name }: { name: keyof PredictFormData }) =>
-    errors[name] ? (
-      <p className="text-xs text-red-500">
-        {errors[name]?.message as string}
-      </p>
-    ) : null
-
   return (
-    <div className="w-full mx-auto">
-      <div className="py-10">
-        <h2 className="text-2xl font-semibold text-pink-600 mb-6">
-          Newborn Risk Prediction
-        </h2>
+    <div className="w-full max-w-6xl mx-auto py-10 px-4">
+      <h2 className="text-2xl font-semibold text-pink-600 mb-6">
+        Newborn Risk Prediction
+      </h2>
 
-        <form
-          onSubmit={handleSubmit(onSubmit)}
-          className=""
-        >
-          <Section title="Basic Info" />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
-            <div className="w-full">
-              <input
-                placeholder="Name"
-                {...register("name")}
-                className="input w-full"
-              />
-              <ErrorMsg name="name" />
-            </div>
+      <form onSubmit={handleSubmit(onSubmit)}>
 
-            <select {...register("gender", { valueAsNumber: true })} className="input">
-              <option value={1}>Male</option>
-              <option value={2}>Female</option>
+        {/* ---------------- Basic Info ---------------- */}
+        <Section title="Basic Info" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+          <FormField label="Name" error={errors.name?.message}>
+            <input
+              {...register("name")}
+              className={`input ${errors.name ? "border-red-500" : ""}`}
+            />
+          </FormField>
+
+          <FormField label="Gender" error={errors.gender?.message}>
+            <select
+              {...register("gender", { valueAsNumber: true })}
+              className={`input ${errors.gender ? "border-red-500" : ""}`}
+            >
+              <option value="">Select Gender</option>
+              <option value={0}>Male</option>
+              <option value={1}>Female</option>
             </select>
-          </div>
+          </FormField>
 
-          <Section title="Birth Details" />
+        </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
-            <input type="number" step="0.01" placeholder="Gestational Age (weeks)" {...register("gestational_age_weeks", { valueAsNumber: true })} className="input" />
-            <input type="number" step="0.01" placeholder="Birth Weight (kg)" {...register("birth_weight_kg", { valueAsNumber: true })} className="input" />
-            <input type="number" step="0.01" placeholder="Birth Length (cm)" {...register("birth_length_cm", { valueAsNumber: true })} className="input" />
-            <input type="number" step="0.01" placeholder="Birth Head Circumference (cm)" {...register("birth_head_circumference_cm", { valueAsNumber: true })} className="input" />
-          </div>
+        {/* ---------------- Birth Details ---------------- */}
+        <Section title="Birth Details" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
 
-          <Section title="Current Measurements" />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
-            <input type="number" placeholder="Age (days)" {...register("age_days", { valueAsNumber: true })} className="input" />
-            <input type="number" step="0.01" placeholder="Weight (kg)" {...register("weight_kg", { valueAsNumber: true })} className="input" />
-            <input type="number" step="0.01" placeholder="Length (cm)" {...register("length_cm", { valueAsNumber: true })} className="input" />
-            <input type="number" step="0.01" placeholder="Head Circumference (cm)" {...register("head_circumference_cm", { valueAsNumber: true })} className="input" />
-          </div>
+          <FormField label="Gestational Age (weeks)" error={errors.gestational_age_weeks?.message}>
+            <input type="number" {...register("gestational_age_weeks", { valueAsNumber: true })} className={`input ${errors.gestational_age_weeks ? "border-red-500" : ""}`} />
+          </FormField>
 
-          <Section title="Vitals" />
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
-            <input type="number" step="0.01" placeholder="Temperature (°C)" {...register("temperature_c", { valueAsNumber: true })} className="input" />
-            <input type="number" placeholder="Heart Rate (bpm)" {...register("heart_rate_bpm", { valueAsNumber: true })} className="input" />
-            <input type="number" placeholder="Respiratory Rate (bpm)" {...register("respiratory_rate_bpm", { valueAsNumber: true })} className="input" />
-            <input type="number" step="0.01" placeholder="Oxygen Saturation (%)" {...register("oxygen_saturation", { valueAsNumber: true })} className="input" />
-          </div>
+          <FormField label="Birth Weight (kg)" error={errors.birth_weight_kg?.message}>
+            <input type="number" step="0.01" {...register("birth_weight_kg", { valueAsNumber: true })} className={`input ${errors.birth_weight_kg ? "border-red-500" : ""}`} />
+          </FormField>
 
-          <Section title="Feeding & Health" />
+          <FormField label="Birth Length (cm)" error={errors.birth_length_cm?.message}>
+            <input type="number" step="0.01" {...register("birth_length_cm", { valueAsNumber: true })} className={`input ${errors.birth_length_cm ? "border-red-500" : ""}`} />
+          </FormField>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 w-full">
-            <select {...register("feeding_type", { valueAsNumber: true })} className="input">
-              <option value={1}>Breastfeeding</option>
-              <option value={2}>Formula</option>
+          <FormField label="Birth Head Circumference (cm)" error={errors.birth_head_circumference_cm?.message}>
+            <input type="number" step="0.01" {...register("birth_head_circumference_cm", { valueAsNumber: true })} className={`input ${errors.birth_head_circumference_cm ? "border-red-500" : ""}`} />
+          </FormField>
+
+        </div>
+
+        {/* ---------------- Current Measurements ---------------- */}
+        <Section title="Current Measurements" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+          <FormField label="Age (days)" error={errors.age_days?.message}>
+            <input type="number" {...register("age_days", { valueAsNumber: true })} className={`input ${errors.age_days ? "border-red-500" : ""}`} />
+          </FormField>
+
+          <FormField label="Weight (kg)" error={errors.weight_kg?.message}>
+            <input type="number" step="0.01" {...register("weight_kg", { valueAsNumber: true })} className={`input ${errors.weight_kg ? "border-red-500" : ""}`} />
+          </FormField>
+
+          <FormField label="Length (cm)" error={errors.length_cm?.message}>
+            <input type="number" step="0.01" {...register("length_cm", { valueAsNumber: true })} className={`input ${errors.length_cm ? "border-red-500" : ""}`} />
+          </FormField>
+
+          <FormField label="Head Circumference (cm)" error={errors.head_circumference_cm?.message}>
+            <input type="number" step="0.01" {...register("head_circumference_cm", { valueAsNumber: true })} className={`input ${errors.head_circumference_cm ? "border-red-500" : ""}`} />
+          </FormField>
+
+        </div>
+
+        {/* ---------------- Vitals ---------------- */}
+        <Section title="Vitals" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+          <FormField label="Temperature (°C)" error={errors.temperature_c?.message}>
+            <input type="number" step="0.01" {...register("temperature_c", { valueAsNumber: true })} className={`input ${errors.temperature_c ? "border-red-500" : ""}`} />
+          </FormField>
+
+          <FormField label="Heart Rate (bpm)" error={errors.heart_rate_bpm?.message}>
+            <input type="number" {...register("heart_rate_bpm", { valueAsNumber: true })} className={`input ${errors.heart_rate_bpm ? "border-red-500" : ""}`} />
+          </FormField>
+
+          <FormField label="Respiratory Rate (bpm)" error={errors.respiratory_rate_bpm?.message}>
+            <input type="number" {...register("respiratory_rate_bpm", { valueAsNumber: true })} className={`input ${errors.respiratory_rate_bpm ? "border-red-500" : ""}`} />
+          </FormField>
+
+          <FormField label="Oxygen Saturation (%)" error={errors.oxygen_saturation?.message}>
+            <input type="number" {...register("oxygen_saturation", { valueAsNumber: true })} className={`input ${errors.oxygen_saturation ? "border-red-500" : ""}`} />
+          </FormField>
+
+        </div>
+
+        {/* ---------------- Feeding & Health ---------------- */}
+        <Section title="Feeding & Health" />
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+
+          <FormField label="Feeding Type" error={errors.feeding_type?.message}>
+            <select {...register("feeding_type", { valueAsNumber: true })} className={`input ${errors.feeding_type ? "border-red-500" : ""}`}>
+              <option value="">Select Feeding Type</option>
+              <option value={0}>Breastfeeding</option>
+              <option value={1}>Formula</option>
             </select>
+          </FormField>
 
-            <input type="number" placeholder="Feeding Frequency / Day" {...register("feeding_frequency_per_day", { valueAsNumber: true })} className="input" />
-            <input type="number" placeholder="Urine Output Count" {...register("urine_output_count", { valueAsNumber: true })} className="input" />
-            <input type="number" placeholder="Stool Count" {...register("stool_count", { valueAsNumber: true })} className="input" />
-            <input type="number" step="0.01" placeholder="Jaundice Level (mg/dl)" {...register("jaundice_level_mg_dl", { valueAsNumber: true })} className="input" />
+          <FormField label="Feeding Frequency / Day" error={errors.feeding_frequency_per_day?.message}>
+            <input type="number" {...register("feeding_frequency_per_day", { valueAsNumber: true })} className={`input ${errors.feeding_frequency_per_day ? "border-red-500" : ""}`} />
+          </FormField>
 
-            <input type="number" step="0.01" placeholder="APGAR Score" {...register("apgar_score", { valueAsNumber: true })} className="input" />
+          <FormField label="Urine Output Count" error={errors.urine_output_count?.message}>
+            <input type="number" {...register("urine_output_count", { valueAsNumber: true })} className={`input ${errors.urine_output_count ? "border-red-500" : ""}`} />
+          </FormField>
 
-            <select {...register("immunizations_done", { valueAsNumber: true })} className="input">
-              <option value={1}>Immunizations Done</option>
+          <FormField label="Stool Count" error={errors.stool_count?.message}>
+            <input type="number" {...register("stool_count", { valueAsNumber: true })} className={`input ${errors.stool_count ? "border-red-500" : ""}`} />
+          </FormField>
+
+          <FormField label="Jaundice Level (mg/dl)" error={errors.jaundice_level_mg_dl?.message}>
+            <input type="number" step="0.01" {...register("jaundice_level_mg_dl", { valueAsNumber: true })} className={`input ${errors.jaundice_level_mg_dl ? "border-red-500" : ""}`} />
+          </FormField>
+
+          <FormField label="APGAR Score" error={errors.apgar_score?.message}>
+            <input type="number" {...register("apgar_score", { valueAsNumber: true })} className={`input ${errors.apgar_score ? "border-red-500" : ""}`} />
+          </FormField>
+
+          <FormField label="Immunizations Done" error={errors.immunizations_done?.message}>
+            <select {...register("immunizations_done", { valueAsNumber: true })} className={`input ${errors.immunizations_done ? "border-red-500" : ""}`}>
+              <option value="">Select Option</option>
+              <option value={1}>Done</option>
               <option value={0}>Not Done</option>
             </select>
+          </FormField>
 
-            <select {...register("reflexes_normal", { valueAsNumber: true })} className="input">
-              <option value={1}>Reflexes Normal</option>
+          <FormField label="Reflexes Normal" error={errors.reflexes_normal?.message}>
+            <select {...register("reflexes_normal", { valueAsNumber: true })} className={`input ${errors.reflexes_normal ? "border-red-500" : ""}`}>
+              <option value="">Select Option</option>
+              <option value={1}>Normal</option>
               <option value={0}>Abnormal</option>
             </select>
-          </div>
+          </FormField>
 
-          <div className="w-full flex items-center justify-center mt-5">
-            <button
-              type="submit"
-              className="w-full max-w-60 mt-2 py-3 h-10 text-sm rounded-xl bg-linear-to-r from-pink-400 to-blue-400 hover:from-pink-500 hover:to-blue-500 transition-all duration-300 text-white font-semibold shadow-md shadow-pink-200/50 disabled:opacity-60 disabled:cursor-not-allowed"
-            >
-              {loading ? "Predicting..." : "Submit Prediction"}
-            </button>
-          </div>
-        </form>
+        </div>
+
+        <div className="flex justify-center mt-8">
+          <button
+            type="submit"
+            disabled={loading}
+            className="px-8 py-3 rounded-xl bg-gradient-to-r from-pink-400 to-blue-400 hover:from-pink-500 hover:to-blue-500 text-white font-semibold shadow-md disabled:opacity-60"
+          >
+            {loading ? "Predicting..." : "Submit Prediction"}
+          </button>
+        </div>
+
+      </form>
 
         {showModal && result && (
           <div className="fixed inset-0 bg-black/40 backdrop-blur-sm flex items-center justify-center z-50">
@@ -176,12 +259,9 @@ export default function PredictPage() {
                   Close
                 </button>
               </div>
-
             </div>
           </div>
         )}
-
-      </div>
     </div>
   )
 }

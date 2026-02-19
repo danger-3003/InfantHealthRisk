@@ -93,58 +93,65 @@ export default function HistoryPage() {
       </div>
 
       {/* TABLE */}
-      <div className="overflow-x-auto bg-white border border-pink-200 rounded-lg shadow-sm">
-        <table className="w-full text-sm text-left">
-          <thead className="bg-pink-50 text-slate-700">
-            <tr>
-              <th className="px-4 py-3">Date</th>
-              <th className="px-4 py-3">Name</th>
-              <th className="px-4 py-3">Jaundice</th>
-              <th className="px-4 py-3">Cardiac</th>
-              <th className="px-4 py-3">Respiratory</th>
-            </tr>
-          </thead>
+      {
+        data?.length > 0 ?
 
-          <tbody>
-            {data.map((record, index) => {
-              const prediction = record.result[0]
-              const conditions = prediction.results
-
-              const jaundice = conditions.find(c => c.condition === "Jaundice")
-              const cardiac = conditions.find(c => c.condition === "Cardiac")
-              const respiratory = conditions.find(c => c.condition === "Respiratory")
-
-              return (
-                <tr
-                  key={index}
-                  onClick={() => setSelectedRecord(record)}
-                  className="border-t border-pink-100 hover:bg-pink-50 cursor-pointer duration-200"
-                >
-                  <td className="px-4 py-3 text-slate-500">
-                    {new Date(record.date).toLocaleString().split(",")[0]}
-                  </td>
-
-                  <td className="px-4 py-3 font-medium">
-                    {prediction.name}
-                  </td>
-
-                  <td className={`px-4 py-3 ${getRiskColor(jaundice?.risk_level || "")}`}>
-                    {jaundice?.risk_level} ({Math.round((jaundice?.confidence || 0) * 100)}%)
-                  </td>
-
-                  <td className={`px-4 py-3 ${getRiskColor(cardiac?.risk_level || "")}`}>
-                    {cardiac?.risk_level} ({Math.round((cardiac?.confidence || 0) * 100)}%)
-                  </td>
-
-                  <td className={`px-4 py-3 ${getRiskColor(respiratory?.risk_level || "")}`}>
-                    {respiratory?.risk_level} ({Math.round((respiratory?.confidence || 0) * 100)}%)
-                  </td>
+          <div className="overflow-x-auto bg-white border border-pink-200 rounded-lg shadow-sm">
+            <table className="w-full text-sm text-left">
+              <thead className="bg-pink-50 text-slate-700">
+                <tr>
+                  <th className="px-4 py-3">Date</th>
+                  <th className="px-4 py-3">Name</th>
+                  <th className="px-4 py-3">Jaundice</th>
+                  <th className="px-4 py-3">Cardiac</th>
+                  <th className="px-4 py-3">Respiratory</th>
                 </tr>
-              )
-            })}
-          </tbody>
-        </table>
-      </div>
+              </thead>
+
+              <tbody>
+                {data.map((record, index) => {
+                  const prediction = record.result[0]
+                  const conditions = prediction.results
+
+                  const jaundice = conditions.find(c => c.condition === "Jaundice")
+                  const cardiac = conditions.find(c => c.condition === "Cardiac")
+                  const respiratory = conditions.find(c => c.condition === "Respiratory")
+
+                  return (
+                    <tr
+                      key={index}
+                      onClick={() => setSelectedRecord(record)}
+                      className="border-t border-pink-100 hover:bg-pink-50 cursor-pointer duration-200"
+                    >
+                      <td className="px-4 py-3 text-slate-500">
+                        {new Date(record.date).toLocaleString().split(",")[0]}
+                      </td>
+
+                      <td className="px-4 py-3 font-medium">
+                        {prediction.name}
+                      </td>
+
+                      <td className={`px-4 py-3 ${getRiskColor(jaundice?.risk_level || "")}`}>
+                        {jaundice?.risk_level} ({Math.round((jaundice?.confidence || 0) * 100)}%)
+                      </td>
+
+                      <td className={`px-4 py-3 ${getRiskColor(cardiac?.risk_level || "")}`}>
+                        {cardiac?.risk_level} ({Math.round((cardiac?.confidence || 0) * 100)}%)
+                      </td>
+
+                      <td className={`px-4 py-3 ${getRiskColor(respiratory?.risk_level || "")}`}>
+                        {respiratory?.risk_level} ({Math.round((respiratory?.confidence || 0) * 100)}%)
+                      </td>
+                    </tr>
+                  )
+                })}
+              </tbody>
+            </table>
+          </div>:
+          <div className="text-center">
+            No records found
+          </div>
+      }
 
       {/* MODAL */}
       {selectedRecord && (
